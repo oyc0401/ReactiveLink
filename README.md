@@ -13,23 +13,19 @@ npm install https://github.com/oyc0401/ReactiveLink.git
 ```javascript
 import { makeState } from 'reactive-link';
 
-// 기본 상태 관리 예제
-const counterState = makeState({ count: 0 });
+const state = makeState({ count: 0 });
 
-// 이벤트와 속성 연결
-counterState.bindEvents({
-    countChanged: { action: 'set', prop: 'count' }
+// 이벤트 연결
+state.bindEvents({
+    countChanged: { action: 'set', prop: 'count' } // 'countChanged' -> count 변경
 });
 
 // 이벤트 리스너 등록
-counterState.on('countChanged', (newValue) => {
+state.on('countChanged', (newValue) => {
     console.log('카운트가 변경되었습니다:', newValue);
 });
 
-// 상태 변경 테스트
-console.log('초기 카운트:', counterState.count);
-counterState.count += 1; // 출력: 카운트가 변경되었습니다
-
+state.count += 1; // 출력: 카운트가 변경되었습니다
 ```
 
 ## API Reference
@@ -69,6 +65,8 @@ state.on('event1 event2', (data) => {
 
 ### 기본 사용법
 ```javascript
+import { makeState } from 'reactive-link';
+
 const state = makeState({ count: 0 });
 
 state.bindEvents({
@@ -85,8 +83,9 @@ state.count++; // 출력: 카운트가 변경되었습니다: 1
 
 ### 여러 이벤트 처리
 ```javascript
-const state = makeState({ name: "Kim", age: 21 });
+import { makeState } from 'reactive-link';
 
+const state = makeState({ name: "Kim", age: 21 });
 
 state.bindEvents({
   event1: { action: "set", prop: "name" }, // 'event1' -> name 변경
