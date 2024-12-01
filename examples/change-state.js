@@ -1,4 +1,4 @@
-import { makeState } from "../src/index.js";
+import { makeState } from "../index.js";
 
 // 초기 값을 가진 상태 스토어 생성
 const state = makeState({ name: "Kim", age: 21 });

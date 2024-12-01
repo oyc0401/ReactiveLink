@@ -1,4 +1,4 @@
-import { makeState } from '../src/index';
+import { makeState } from '../index';
 import {jest} from '@jest/globals'
 
 describe('StateStore', () => {
