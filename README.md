@@ -1,6 +1,6 @@
 # Reactive Link
 
-JavaScript 애플리케이션을 위한 가벼운 반응형 상태 관리 라이브러리로, 이벤트 처리 기능을 제공합니다.
+반응형 이벤트 처리를 제공하는 JavaScript 상태관리 라이브러리 입니다.
 
 ## 설치
 
@@ -69,15 +69,12 @@ state.on('event1 event2', (data) => {
 
 ### 기본 사용법
 ```javascript
-// 초기 상태 스토어 생성
 const state = makeState({ count: 0 });
 
-// 이벤트와 상태 변경 동작 바인딩
 state.bindEvents({
   countChanged: { action: 'set', prop: 'count' }, // 'countChanged' -> count 변경
 });
 
-// 상태 변경 이벤트 리스너 등록
 state.on('countChanged', (newValue) => {
   console.log('카운트가 변경되었습니다:', newValue);
 });
@@ -88,16 +85,14 @@ state.count++; // 출력: 카운트가 변경되었습니다: 1
 
 ### 여러 이벤트 처리
 ```javascript
-// 초기 값을 가진 상태 스토어 생성
 const state = makeState({ name: "Kim", age: 21 });
 
-// 이벤트에 상태 프로퍼티 접근/변경 동작 바인딩
+
 state.bindEvents({
   event1: { action: "set", prop: "name" }, // 'event1' -> name 변경
   event2: { action: "get", prop: "age" }, // 'event2' -> age 접근
 });
 
-// 상태 변경 이벤트 리스너 등록
 state.on("event1", (newName) => {
   console.log("이름이 변경되었습니다:", newName);
 });
