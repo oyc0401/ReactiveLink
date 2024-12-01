@@ -3,6 +3,6 @@
  * @description Main entry point for the state management library
  */
 
-import { makeState } from './src/reactive-link';
+import { makeState } from './reactive-link';
 
 export { makeState };

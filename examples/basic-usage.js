@@ -1,4 +1,4 @@
-import {makeState} from '../index.js';
+import {makeState} from '../src/index.js';
 
 // 초기 상태 스토어 생성
 const state = makeState({ count: 0 });

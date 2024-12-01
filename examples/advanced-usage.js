@@ -1,5 +1,3 @@
-import {makeState} from '../index.js';
-
 // 사용 예시
 const state = makeState({ name: "Kim", age: 21 , array:[1, 2]});
 
