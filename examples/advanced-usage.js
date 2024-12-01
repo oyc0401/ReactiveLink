@@ -1,41 +1,43 @@
-import {makeState} from '../src/index.js';
+// 사용 예시
+const state = makeState({ name: "Kim", age: 21 , array:[1, 2]});
 
-// 폼 상태 관리 예제
-const formState = makeState({
-    values: { username: '', email: '' },
-    errors: {},
-    isValid: true
+// 상태 변경
+state.changeState({ name: "hello", age: 12 , array:[1, 2]});
+
+// 이벤트 매핑
+state.bindEvents({
+  changename: { action: "set", prop: "name" },
+  getage: { action: "get", prop: "age" },
+  changeage: { action: "set", prop: "age" },
+  changeArray: { action: "set", prop: "array" },
 });
 
-// 이벤트 바인딩
-formState.bindEvents({
-    valuesChanged: { action: 'set', prop: 'values' },
-    errorsChanged: { action: 'set', prop: 'errors' }
+// 이벤트 리스너 등록
+state.on("changename", (name) => {
+  console.log("이름이 변경되었습니다:", name);
+});
+state.on("getage", (age) => {
+  console.log("나이에 접근했습니다:", age);
 });
 
-// 폼 값 유효성 검사
-formState.on('valuesChanged', (values) => {
-    const errors = {};
-    
-    if (!values.username) {
-        errors.username = '사용자 이름을 입력하세요';
-    }
-    
-    if (!values.email.includes('@')) {
-        errors.email = '올바른 이메일 주소를 입력하세요';
-    }
-    
-    formState.errors = errors;
-    formState.isValid = Object.keys(errors).length === 0;
+state.on("changename changeage", (val) => {
+  console.log("변경되었습니다:", val);
 });
 
-// 폼 테스트
-console.log('초기 상태:', formState.values, formState.errors);
+state.on("changeArray", (val) => {
+  console.log("배열 변경:", val);
+});
+// 상태 변경으로 이벤트 트리거
+state.name = "Mike"; // 출력: 이름이 변경되었습니다: Mike
 
-// 잘못된 데이터 입력
-formState.values = { username: '', email: 'invalid-email' };
-console.log('유효성 검사 결과:', formState.errors);
+state.age; // 출력: 나이에 접근했습니다: 12
 
-// 올바른 데이터 입력
-formState.values = { username: 'user123', email: 'user@example.com' };
-console.log('최종 상태:', formState.values, formState.errors, formState.isValid);
+state.changeState({ name: "bar", age: 65 });
+
+state.age; // 출력: 나이에 접근했습니다: 65
+
+state.age=23;
+
+state.array[1] = 6 // set 트랩 동작안함
+
+state.array=[123];

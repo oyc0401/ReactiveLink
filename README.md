@@ -1,6 +1,6 @@
 # Reactive Link
 
-JavaScript 애플리케이션을 위한 가볍고 반응형 상태 관리 라이브러리로, 이벤트 처리 기능을 제공합니다.
+JavaScript 애플리케이션을 위한 가벼운 반응형 상태 관리 라이브러리로, 이벤트 처리 기능을 제공합니다.
 
 ## 설치
 
@@ -13,28 +13,22 @@ npm install https://github.com/oyc0401/ReactiveLink.git
 ```javascript
 import { makeState } from 'reactive-link';
 
-// 초기 값을 가진 상태 스토어 생성
-const state = makeState({ name: 'Kim', age: 21 });
+// 기본 상태 관리 예제
+const counterState = makeState({ count: 0 });
 
-// 상태 변경 이벤트 리스너 등록
-state.on('nameChanged', (newName) => {
-  console.log('이름이 변경되었습니다:', newName);
+// 이벤트와 속성 연결
+counterState.bindEvents({
+    countChanged: { action: 'set', prop: 'count' }
 });
 
-// 프로퍼티 접근 및 변경에 이벤트 바인딩
-state.bindEvents({
-  nameChanged: { action: 'set', prop: 'name' },
-  ageAccessed: { action: 'get', prop: 'age' }
+// 이벤트 리스너 등록
+counterState.on('countChanged', (newValue) => {
+    console.log('카운트가 변경되었습니다:', newValue);
 });
 
-// 상태 프로퍼티 업데이트
-state.name = 'Lee';  // 'nameChanged' 이벤트 트리거
-
-// 상태 프로퍼티 접근
-console.log(state.age);  // 'ageAccessed' 이벤트 트리거
-
-// 여러 프로퍼티를 한 번에 업데이트
-state.changeState({ name: 'Park', age: 25 });
+// 상태 변경 테스트
+console.log('초기 카운트:', counterState.count);
+counterState.count += 1; // 출력: 카운트가 변경되었습니다
 
 ```
 
@@ -45,8 +39,15 @@ state.changeState({ name: 'Park', age: 25 });
 
 ### StateStore 클래스
 
-#### `changeState(newState)`
-여러 상태 프로퍼티를 한 번에 업데이트합니다.
+#### `bindEvents(mapping)`
+프로퍼티 변경을 이벤트에 바인딩합니다.
+
+```javascript
+state.bindEvents({
+  event1: { action: 'set', prop: 'name' },
+  event2: { action: 'get', prop: 'age' }
+});
+```
 
 #### `on(eventNames, callback)`
 이벤트 리스너를 등록합니다. 공백으로 구분된 여러 이벤트 이름을 지원합니다.
@@ -60,47 +61,69 @@ state.on('event1 event2', (data) => {
 #### `off(eventName, callback)`
 이벤트 리스너를 제거합니다.
 
-#### `bindEvents(mapping)`
-프로퍼티 변경을 이벤트에 바인딩합니다.
-
-```javascript
-state.bindEvents({
-  nameChanged: { action: 'set', prop: 'name' },
-  ageAccessed: { action: 'get', prop: 'age' }
-});
-```
+#### `changeState(newState)`
+여러 상태 프로퍼티를 한 번에 업데이트합니다.
+이때 이벤트는 발생시키지 않습니다.
 
 ## 예제
 
 ### 기본 사용법
 ```javascript
+// 초기 상태 스토어 생성
 const state = makeState({ count: 0 });
 
+// 상태 변경 이벤트 리스너 등록
 state.on('countChanged', (newValue) => {
   console.log('카운트가 변경되었습니다:', newValue);
 });
 
+// 이벤트와 상태 변경 동작 바인딩
 state.bindEvents({
-  countChanged: { action: 'set', prop: 'count' }
+  countChanged: { action: 'set', prop: 'count' }, // 'countChanged' -> count 변경
 });
 
+// 상태 변경 (트리거: countChanged)
 state.count++; // 출력: 카운트가 변경되었습니다: 1
 ```
 
 ### 여러 이벤트 처리
 ```javascript
-const state = makeState({ user: { name: 'Kim', age: 21 } });
+// 초기 값을 가진 상태 스토어 생성
+const state = makeState({ name: "Kim", age: 21 });
 
-state.on('userUpdated nameChanged', (data) => {
-  console.log('사용자 데이터가 변경되었습니다:', data);
-});
-
+// 이벤트에 상태 프로퍼티 접근/변경 동작 바인딩
 state.bindEvents({
-  userUpdated: { action: 'set', prop: 'user' },
-  nameChanged: { action: 'set', prop: 'name' }
+  event1: { action: "set", prop: "name" }, // 'event1' -> name 변경
+  event2: { action: "get", prop: "age" }, // 'event2' -> age 접근
 });
 
-state.changeState({ user: { name: 'Lee', age: 25 } });
+// 상태 변경 이벤트 리스너 등록
+state.on("event1", (newName) => {
+  console.log("이름이 변경되었습니다:", newName);
+});
+
+// 여러 이벤트에 하나의 리스너 등록
+state.on("event1 event2", (value) => {
+  console.log("이벤트 발생:", value);
+});
+
+// 상태 프로퍼티 업데이트 (트리거: event1)
+state.name = "Lee";
+
+// 상태 프로퍼티 접근 (트리거: event2)
+console.log(state.age);
+
+// 여러 상태를 한 번에 업데이트 (이벤트 트리거 X)
+state.changeState({ name: "Park", age: 25 });
+
+/**
+ * < 출력 >
+ * 이름이 변경되었습니다: Lee
+ * 이벤트 발생: Lee
+ * 이벤트 발생: 21
+ * 21
+**/
+
 ```
 
 ## License
