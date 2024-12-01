@@ -2,7 +2,7 @@ import { makeState } from '../src/index';
 import {jest} from '@jest/globals'
 
 describe('StateStore', () => {
-  let state;
+  let state: any;
 
   beforeEach(() => {
     state = makeState({ name: 'Kim', age: 21 });
